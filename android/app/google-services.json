@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "335784904935",
+    "firebase_url": "https://candy-sun-default-rtdb.firebaseio.com",
+    "project_id": "candy-sun",
+    "storage_bucket": "candy-sun.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:335784904935:android:91a6bf4a899b6834a3fa42",
+        "android_client_info": {
+          "package_name": "com.example.candy_sun"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "335784904935-5doeaiihspg3fcjv3d6t8dlq5lnk7tci.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDjiS-fdjpXgm7mQnPMiMs6lCCI5Vzp-vc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "335784904935-5doeaiihspg3fcjv3d6t8dlq5lnk7tci.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
