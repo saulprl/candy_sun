@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 import './screens/products_overview_screen.dart';
 import './screens/product_detail_screen.dart';
@@ -12,15 +13,21 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Candy Sun',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSwatch().copyWith(
-          primary: Colors.pink,
-          secondary: Colors.deepPurple[500],
-        ),
-      ),
-      home: ProductsOverviewScreen(),
+    final Future<FirebaseApp> _initialization = Firebase.initializeApp();
+    return FutureBuilder(
+      future: _initialization,
+      builder: (ctx, appSnapshot) {
+        return MaterialApp(
+          title: 'Candy Sun',
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSwatch().copyWith(
+              primary: Colors.pink,
+              secondary: Colors.deepPurple[500],
+            ),
+          ),
+          home: ProductsOverviewScreen(),
+        );
+      },
     );
   }
 }

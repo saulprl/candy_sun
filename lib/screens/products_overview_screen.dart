@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../widgets/product_item.dart';
 import '../models/product.dart';
@@ -69,11 +70,25 @@ class ProductsOverviewScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Products"),
+        title: const Text('Products'),
       ),
-      body: ListView.builder(
-        itemCount: _products.length,
-        itemBuilder: (ctx, index) => ProductItem(_products[index]),
+      body: StreamBuilder(
+        stream: FirebaseFirestore.instance.collection('products').snapshots(),
+        builder: (ctx, AsyncSnapshot<QuerySnapshot> productsSnapshot) {
+          if (productsSnapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          final documents = productsSnapshot.data!.docs;
+          return ListView.builder(
+            itemBuilder: (ctx, index) => ProductItem(
+              documents[index]['title'],
+              double.parse(documents[index]['price']),
+            ),
+            itemCount: documents.length,
+          );
+        },
       ),
     );
   }

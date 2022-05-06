@@ -6,9 +6,10 @@ import '../models/product.dart';
 class ProductItem extends StatefulWidget {
   static final routeName = '/product-detail';
 
-  final Product product;
+  final String title;
+  final double price;
 
-  const ProductItem(this.product, {Key? key}) : super(key: key);
+  const ProductItem(this.title, this.price, {Key? key}) : super(key: key);
 
   @override
   State<ProductItem> createState() => _ProductItemState();
@@ -26,20 +27,20 @@ class _ProductItemState extends State<ProductItem> {
       ),
       child: Material(
         child: InkWell(
-          onTap: () => Navigator.of(context).push(
+          /*onTap: () => Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (context) => ProductDetailScreen(widget.product),
+              builder: (context) => ProductDetailScreen(),
             ),
-          ),
+          ),*/
           borderRadius: BorderRadius.circular(15.0),
           child: Column(
             children: [
               ListTile(
                 title: Text(
-                  widget.product.title,
+                  widget.title,
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
-                subtitle: Text('\$${widget.product.price.toStringAsFixed(2)}'),
+                subtitle: Text('\$${widget.price.toStringAsFixed(2)}'),
                 trailing: IconButton(
                   icon: Icon(_expanded ? Icons.expand_less : Icons.expand_more),
                   onPressed: () {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ProductForm extends StatefulWidget {
   // final void Function(
@@ -28,6 +29,13 @@ class ProductForm extends StatefulWidget {
 }
 
 class _ProductFormState extends State<ProductForm> {
+  final GlobalKey<FormState> _formKey = GlobalKey();
+  final _titleController = TextEditingController();
+  final _priceController = TextEditingController();
+  final _costController = TextEditingController();
+  final _quantityController = TextEditingController();
+  final _caloriesController = TextEditingController();
+  final _trademarkController = TextEditingController();
   final _purchaseDateController = TextEditingController();
   final _expirationDateController = TextEditingController();
 
@@ -65,12 +73,33 @@ class _ProductFormState extends State<ProductForm> {
     });
   }
 
-  void _saveForm() {}
+  void _saveForm() {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
+    FirebaseFirestore.instance.collection('products').add({
+      'title': _titleController.text,
+      'price': _priceController.text,
+      'cost': _costController.text,
+      'quantity': _quantityController.text,
+      'calories': _caloriesController.text,
+      'dateOfPurchase': _purchaseDateController.text,
+      'expirationDate': _expirationDateController.text,
+      'trademark': _trademarkController.text,
+    });
+
+    ScaffoldMessenger.of(context).removeCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text('Product added', textAlign: TextAlign.center),
+      duration: Duration(seconds: 3),
+    ));
+
+    Navigator.of(context).pop();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<FormState> _formKey = GlobalKey();
-
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -80,6 +109,7 @@ class _ProductFormState extends State<ProductForm> {
             children: [
               TextFormField(
                 key: const ValueKey('title'),
+                controller: _titleController,
                 autocorrect: true,
                 enableSuggestions: true,
                 textCapitalization: TextCapitalization.words,
@@ -101,6 +131,7 @@ class _ProductFormState extends State<ProductForm> {
               ),
               TextFormField(
                 key: const ValueKey('trademark'),
+                controller: _trademarkController,
                 autocorrect: true,
                 enableSuggestions: true,
                 textCapitalization: TextCapitalization.words,
@@ -122,6 +153,7 @@ class _ProductFormState extends State<ProductForm> {
               ),
               TextFormField(
                 key: const ValueKey('price'),
+                controller: _priceController,
                 textInputAction: TextInputAction.next,
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
@@ -142,6 +174,7 @@ class _ProductFormState extends State<ProductForm> {
               ),
               TextFormField(
                 key: const ValueKey('cost'),
+                controller: _costController,
                 textInputAction: TextInputAction.next,
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
@@ -162,7 +195,8 @@ class _ProductFormState extends State<ProductForm> {
               ),
               TextFormField(
                 key: const ValueKey('quantity'),
-                textInputAction: TextInputAction.next,
+                controller: _quantityController,
+                textInputAction: TextInputAction.done,
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
                   labelText: 'Quantity',
@@ -228,7 +262,8 @@ class _ProductFormState extends State<ProductForm> {
               ),
               TextFormField(
                 key: const ValueKey('calories'),
-                textInputAction: TextInputAction.next,
+                controller: _caloriesController,
+                textInputAction: TextInputAction.done,
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
                   labelText: 'Calories',
@@ -248,7 +283,7 @@ class _ProductFormState extends State<ProductForm> {
               ),
               const SizedBox(height: 16.0),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: _saveForm,
                 child: const Text('Save product'),
               ),
             ],
