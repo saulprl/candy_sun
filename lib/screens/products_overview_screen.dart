@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../widgets/product_item.dart';
+import '../widgets/products/product_item.dart';
 import '../models/product.dart';
 
 class ProductsOverviewScreen extends StatelessWidget {
-  static final routeName = '/';
+  static const routeName = '/';
   final List<Product> _products = [
     Product(
       id: 'p1',
