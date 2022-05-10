@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ProductForm extends StatefulWidget {
+  String? productId;
   // final void Function(
   //   String title,
   //   double price,
@@ -16,19 +17,22 @@ class ProductForm extends StatefulWidget {
   // final bool isLoading;
   // final String? id;
 
-  const ProductForm(
+  ProductForm(
       // this.submitFn,
       // this.isLoading,
-      {
-    Key? key,
-    // this.id,
-  }) : super(key: key);
+      {Key? key,
+      this.productId
+      // this.id,
+      })
+      : super(key: key);
 
   @override
   State<ProductForm> createState() => _ProductFormState();
 }
 
 class _ProductFormState extends State<ProductForm> {
+  var _isInit = false;
+  var _isAdd = true;
   final GlobalKey<FormState> _formKey = GlobalKey();
   final _titleController = TextEditingController();
   final _priceController = TextEditingController();
@@ -38,6 +42,31 @@ class _ProductFormState extends State<ProductForm> {
   final _trademarkController = TextEditingController();
   final _purchaseDateController = TextEditingController();
   final _expirationDateController = TextEditingController();
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_isInit) {
+      print(widget.productId);
+      if (widget.productId != null) {
+        FirebaseFirestore.instance
+            .doc('products/${widget.productId}')
+            .get()
+            .then((product) {
+          _titleController.text = product['title'];
+          _priceController.text = product['price'];
+          _costController.text = product['cost'];
+          _quantityController.text = product['quantity'];
+          _caloriesController.text = product['calories'];
+          _trademarkController.text = product['trademark'];
+          _purchaseDateController.text = product['dateOfPurchase'];
+          _expirationDateController.text = product['expirationDate'];
+          _isAdd = false;
+        });
+      }
+      _isInit = true;
+    }
+  }
 
   void _showDatePicker(TextEditingController controller) {
     final DateTime firstDate;
@@ -78,22 +107,41 @@ class _ProductFormState extends State<ProductForm> {
       return;
     }
 
-    FirebaseFirestore.instance.collection('products').add({
-      'title': _titleController.text,
-      'price': _priceController.text,
-      'cost': _costController.text,
-      'quantity': _quantityController.text,
-      'calories': _caloriesController.text,
-      'dateOfPurchase': _purchaseDateController.text,
-      'expirationDate': _expirationDateController.text,
-      'trademark': _trademarkController.text,
-    });
+    if (_isAdd) {
+      FirebaseFirestore.instance.collection('products').add({
+        'title': _titleController.text,
+        'price': _priceController.text,
+        'cost': _costController.text,
+        'quantity': _quantityController.text,
+        'calories': _caloriesController.text,
+        'dateOfPurchase': _purchaseDateController.text,
+        'expirationDate': _expirationDateController.text,
+        'trademark': _trademarkController.text,
+      });
 
-    ScaffoldMessenger.of(context).removeCurrentSnackBar();
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-      content: Text('Product added', textAlign: TextAlign.center),
-      duration: Duration(seconds: 3),
-    ));
+      ScaffoldMessenger.of(context).removeCurrentSnackBar();
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Product added!', textAlign: TextAlign.center),
+        duration: Duration(seconds: 3),
+      ));
+    } else {
+      FirebaseFirestore.instance.doc('products/${widget.productId}').set({
+        'title': _titleController.text,
+        'price': _priceController.text,
+        'cost': _costController.text,
+        'quantity': _quantityController.text,
+        'calories': _caloriesController.text,
+        'dateOfPurchase': _purchaseDateController.text,
+        'expirationDate': _expirationDateController.text,
+        'trademark': _trademarkController.text,
+      }); //Need to swap initializers with StreamBuilders/FutureBuilders.
+
+      ScaffoldMessenger.of(context).removeCurrentSnackBar();
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Product edited!', textAlign: TextAlign.center),
+        duration: Duration(seconds: 3),
+      ));
+    }
 
     Navigator.of(context).pop();
   }

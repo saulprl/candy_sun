@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../widgets/products/product_item.dart';
+import '../widgets/global/main_drawer.dart';
 import '../models/product.dart';
+import './edit_product_screen.dart';
 
 class ProductsOverviewScreen extends StatelessWidget {
   static const routeName = '/';
@@ -71,7 +73,15 @@ class ProductsOverviewScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Products'),
+        actions: [
+          IconButton(
+            onPressed: () =>
+                Navigator.of(context).pushNamed(EditProductScreen.routeName),
+            icon: const Icon(Icons.add),
+          ),
+        ],
       ),
+      drawer: const MainDrawer(),
       body: StreamBuilder(
         stream: FirebaseFirestore.instance.collection('products').snapshots(),
         builder: (ctx, AsyncSnapshot<QuerySnapshot> productsSnapshot) {
@@ -83,6 +93,7 @@ class ProductsOverviewScreen extends StatelessWidget {
           final documents = productsSnapshot.data!.docs;
           return ListView.builder(
             itemBuilder: (ctx, index) => ProductItem(
+              documents[index].id,
               documents[index]['title'],
               double.parse(documents[index]['price']),
             ),

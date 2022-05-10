@@ -1,9 +1,10 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 import './screens/products_overview_screen.dart';
 import './screens/product_detail_screen.dart';
+import './screens/edit_product_screen.dart';
 import './screens/splash_screen.dart';
 import './screens/auth_screen.dart';
 
@@ -44,6 +45,10 @@ class MyApp extends StatelessWidget {
                     return const AuthScreen();
                   },
                 ),
+          routes: {
+            EditProductScreen.routeName: (context) => const EditProductScreen(),
+            ProductDetailScreen.routeName: (context) => ProductDetailScreen(),
+          },
         );
       },
     );

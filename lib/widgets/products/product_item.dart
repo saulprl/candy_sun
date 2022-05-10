@@ -4,12 +4,12 @@ import '../../screens/product_detail_screen.dart';
 import '../../models/product.dart';
 
 class ProductItem extends StatefulWidget {
-  static final routeName = '/product-detail';
-
+  final String id;
   final String title;
   final double price;
 
-  const ProductItem(this.title, this.price, {Key? key}) : super(key: key);
+  const ProductItem(this.id, this.title, this.price, {Key? key})
+      : super(key: key);
 
   @override
   State<ProductItem> createState() => _ProductItemState();
@@ -27,11 +27,10 @@ class _ProductItemState extends State<ProductItem> {
       ),
       child: Material(
         child: InkWell(
-          /*onTap: () => Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => ProductDetailScreen(),
-            ),
-          ),*/
+          onTap: () => Navigator.of(context).pushNamed(
+            ProductDetailScreen.routeName,
+            arguments: widget.id,
+          ),
           borderRadius: BorderRadius.circular(15.0),
           child: Column(
             children: [

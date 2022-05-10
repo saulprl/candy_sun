@@ -1,13 +1,62 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
 import './edit_product_screen.dart';
 import '../models/product.dart';
 
-class ProductDetailScreen extends StatelessWidget {
-  final Product product;
+class ProductDetailScreen extends StatefulWidget {
+  static const routeName = '/product-detail';
 
-  const ProductDetailScreen(this.product, {Key? key}) : super(key: key);
+  const ProductDetailScreen({Key? key}) : super(key: key);
+
+  @override
+  State<ProductDetailScreen> createState() => _ProductDetailScreenState();
+}
+
+class _ProductDetailScreenState extends State<ProductDetailScreen> {
+  String? _productId;
+  var _isInit = false;
+  Map<String, String> _initValues = {
+    'id': '',
+    'title': '',
+    'price': '',
+    'cost': '',
+    'quantity': '',
+    'trademark': '',
+    'calories': '',
+    'dateOfPurchase': '2000-01-01',
+    'expirationDate': '2000-01-01',
+  };
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_isInit) {
+      if (ModalRoute.of(context)!.settings.arguments != null) {
+        _productId = ModalRoute.of(context)!.settings.arguments as String;
+        FirebaseFirestore.instance
+            .doc('products/$_productId')
+            .get()
+            .then((value) {
+          setState(() {
+            _initValues = {
+              'id': value.id,
+              'title': value['title'],
+              'price': value['price'],
+              'cost': value['cost'],
+              'calories': value['calories'],
+              'quantity': value['quantity'],
+              'trademark': value['trademark'],
+              'dateOfPurchase': value['dateOfPurchase'],
+              'expirationDate': value['expirationDate'],
+            };
+          });
+        });
+      }
+      _isInit = true;
+    }
+  }
 
   Widget _textProperty(String propertyName, String value) {
     Widget textWidget;
@@ -36,28 +85,36 @@ class ProductDetailScreen extends StatelessWidget {
     return textWidget;
   }
 
-  Widget _productDetails(Product prod) {
+  Widget _productDetails() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _textProperty('Trademark', product.trademark),
+        _textProperty('Trademark', _initValues['trademark']!),
         const Divider(height: 10.0),
-        _textProperty('Calories', product.calories.toStringAsFixed(2)),
+        _textProperty('Calories', _initValues['calories']!),
         const Divider(height: 10.0),
-        _textProperty('Price', product.price.toStringAsFixed(2)),
+        _textProperty('Price', _initValues['price']!),
         const Divider(height: 10.0),
-        _textProperty('Quantity', product.quantity.toStringAsFixed(2)),
+        _textProperty('Quantity', _initValues['quantity']!),
         const Divider(height: 10.0),
-        _textProperty('Cost', product.cost.toStringAsFixed(2)),
+        _textProperty('Cost', _initValues['cost']!),
         const Divider(height: 10.0),
         _textProperty(
           'Date of purchase',
-          DateFormat('yyyy-MM-dd').format(product.dateOfPurchase),
+          DateFormat('yyyy-MM-dd')
+              .parse(_initValues['dateOfPurchase']!)
+              .toString()
+              .split(' ')
+              .first,
         ),
         const Divider(height: 10.0),
         _textProperty(
           'Expiration date',
-          DateFormat('yyyy-MM-dd').format(product.expirationDate),
+          DateFormat('yyyy-MM-dd')
+              .parse(_initValues['expirationDate']!)
+              .toString()
+              .split(' ')
+              .first,
         ),
       ],
     );
@@ -67,7 +124,7 @@ class ProductDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(product.title),
+        title: Text(_initValues['title']!),
       ),
       body: Column(
         children: [
@@ -78,7 +135,7 @@ class ProductDetailScreen extends StatelessWidget {
               padding: const EdgeInsets.all(12.0),
               child: SizedBox(
                 height: 250,
-                child: _productDetails(product),
+                child: _productDetails(),
               ),
             ),
           ),
@@ -88,10 +145,9 @@ class ProductDetailScreen extends StatelessWidget {
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
             ),
             onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const EditProductScreen(),
-                ),
+              Navigator.of(context).pushNamed(
+                EditProductScreen.routeName,
+                arguments: _productId,
               );
             },
           ),
