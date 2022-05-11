@@ -40,14 +40,15 @@ class MyApp extends StatelessWidget {
                       return const SplashScreen();
                     }
                     if (userSnapshot.hasData) {
-                      return ProductsOverviewScreen();
+                      return const ProductsOverviewScreen();
                     }
                     return const AuthScreen();
                   },
                 ),
           routes: {
             EditProductScreen.routeName: (context) => const EditProductScreen(),
-            ProductDetailScreen.routeName: (context) => ProductDetailScreen(),
+            ProductDetailScreen.routeName: (context) =>
+                const ProductDetailScreen(),
           },
         );
       },

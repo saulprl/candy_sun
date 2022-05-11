@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
@@ -17,7 +19,7 @@ class ProductDetailScreen extends StatefulWidget {
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
   String? _productId;
   var _isInit = false;
-  Map<String, String> _initValues = {
+  Map<String, dynamic> _initValues = {
     'id': '',
     'title': '',
     'price': '',
@@ -25,8 +27,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     'quantity': '',
     'trademark': '',
     'calories': '',
-    'dateOfPurchase': '2000-01-01',
-    'expirationDate': '2000-01-01',
+    'dateOfPurchase': DateTime.now(),
+    'expirationDate': DateTime.now(),
   };
 
   @override
@@ -35,24 +37,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     if (!_isInit) {
       if (ModalRoute.of(context)!.settings.arguments != null) {
         _productId = ModalRoute.of(context)!.settings.arguments as String;
-        FirebaseFirestore.instance
-            .doc('products/$_productId')
-            .get()
-            .then((value) {
-          setState(() {
-            _initValues = {
-              'id': value.id,
-              'title': value['title'],
-              'price': value['price'],
-              'cost': value['cost'],
-              'calories': value['calories'],
-              'quantity': value['quantity'],
-              'trademark': value['trademark'],
-              'dateOfPurchase': value['dateOfPurchase'],
-              'expirationDate': value['expirationDate'],
-            };
-          });
-        });
       }
       _isInit = true;
     }
@@ -126,32 +110,53 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       appBar: AppBar(
         title: Text(_initValues['title']!),
       ),
-      body: Column(
-        children: [
-          Card(
-            elevation: 2,
-            margin: const EdgeInsets.all(12.0),
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: SizedBox(
-                height: 250,
-                child: _productDetails(),
+      body: FutureBuilder(
+        future: FirebaseFirestore.instance.doc('products/$_productId').get(),
+        builder: (ctx,
+            AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> product) {
+          if (product.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(
+                  color: Theme.of(ctx).colorScheme.secondary),
+            );
+          }
+          _initValues = product.data!.data()!;
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Card(
+                elevation: 2,
+                margin: const EdgeInsets.all(12.0),
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: SizedBox(
+                    height: 250,
+                    child: _productDetails(),
+                  ),
+                ),
               ),
-            ),
-          ),
-          TextButton(
-            child: const Text(
-              'Edit product',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
-            ),
-            onPressed: () {
-              Navigator.of(context).pushNamed(
-                EditProductScreen.routeName,
-                arguments: _productId,
-              );
-            },
-          ),
-        ],
+              TextButton(
+                child: const Text(
+                  'Edit product',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
+                ),
+                onPressed: () {
+                  Navigator.of(context)
+                      .pushNamed(
+                    EditProductScreen.routeName,
+                    arguments: _productId,
+                  )
+                      .then((value) {
+                    if (value.toString() == 'true') {
+                      setState(() {});
+                    }
+                  });
+                },
+              ),
+            ],
+          );
+        },
       ),
     );
   }

@@ -6,9 +6,13 @@ import '../../models/product.dart';
 class ProductItem extends StatefulWidget {
   final String id;
   final String title;
-  final double price;
+  final String price;
+  final String quantity;
+  final String expirationDate;
 
-  const ProductItem(this.id, this.title, this.price, {Key? key})
+  const ProductItem(
+      this.id, this.title, this.price, this.quantity, this.expirationDate,
+      {Key? key})
       : super(key: key);
 
   @override
@@ -39,7 +43,7 @@ class _ProductItemState extends State<ProductItem> {
                   widget.title,
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
-                subtitle: Text('\$${widget.price.toStringAsFixed(2)}'),
+                subtitle: Text('\$${widget.price}'),
                 trailing: IconButton(
                   icon: Icon(_expanded ? Icons.expand_less : Icons.expand_more),
                   onPressed: () {
@@ -52,15 +56,37 @@ class _ProductItemState extends State<ProductItem> {
               AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
                 constraints: BoxConstraints(
-                  minHeight: _expanded ? 60.0 : 0.0,
-                  maxHeight: _expanded ? 100.0 : 0.0,
+                  minHeight: _expanded ? 40.0 : 0.0,
+                  maxHeight: _expanded ? 80.0 : 0.0,
                 ),
                 padding: const EdgeInsets.symmetric(
                   horizontal: 15.0,
                   vertical: 4.0,
                 ),
-                height: 60.0,
-                child: const Text('Animated'),
+                height: 40.0,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        const Text(
+                          'Quantity: ',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        Text(widget.quantity),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        const Text(
+                          'Expiration date: ',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        Text(widget.expirationDate),
+                      ],
+                    )
+                  ],
+                ),
               ),
             ],
           ),

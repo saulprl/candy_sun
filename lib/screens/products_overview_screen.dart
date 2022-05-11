@@ -8,65 +8,65 @@ import './edit_product_screen.dart';
 
 class ProductsOverviewScreen extends StatelessWidget {
   static const routeName = '/';
-  final List<Product> _products = [
-    Product(
-      id: 'p1',
-      title: 'Skittles',
-      price: 2.49,
-      cost: 1.99,
-      calories: 150.0,
-      quantity: 25,
-      dateOfPurchase: DateTime(2022, 5, 2),
-      expirationDate: DateTime(2023, 12, 15),
-      trademark: 'Placeholder',
-    ),
-    Product(
-      id: 'p2',
-      title: 'Prod 2',
-      price: 2.49,
-      cost: 1.99,
-      calories: 150.0,
-      quantity: 25,
-      dateOfPurchase: DateTime(2022, 5, 2),
-      expirationDate: DateTime(2023, 12, 15),
-      trademark: 'Placeholder',
-    ),
-    Product(
-      id: 'p3',
-      title: 'Prod 3',
-      price: 2.49,
-      cost: 1.99,
-      calories: 150.0,
-      quantity: 25,
-      dateOfPurchase: DateTime(2022, 5, 2),
-      expirationDate: DateTime(2023, 12, 15),
-      trademark: 'Placeholder',
-    ),
-    Product(
-      id: 'p4',
-      title: 'Prod 4',
-      price: 2.49,
-      cost: 1.99,
-      calories: 150.0,
-      quantity: 25,
-      dateOfPurchase: DateTime(2022, 5, 2),
-      expirationDate: DateTime(2023, 12, 15),
-      trademark: 'Placeholder',
-    ),
-    Product(
-      id: 'p5',
-      title: 'Prod 5',
-      price: 2.49,
-      cost: 1.99,
-      calories: 150.0,
-      quantity: 25,
-      dateOfPurchase: DateTime(2022, 5, 2),
-      expirationDate: DateTime(2023, 12, 15),
-      trademark: 'Placeholder',
-    ),
-  ];
+  // final List<Product> _products = [
+  //   Product(
+  //     id: 'p1',
+  //     title: 'Skittles',
+  //     price: 2.49,
+  //     cost: 1.99,
+  //     calories: 150.0,
+  //     quantity: 25,
+  //     dateOfPurchase: DateTime(2022, 5, 2),
+  //     expirationDate: DateTime(2023, 12, 15),
+  //     trademark: 'Placeholder',
+  //   ),
+  //   Product(
+  //     id: 'p2',
+  //     title: 'Prod 2',
+  //     price: 2.49,
+  //     cost: 1.99,
+  //     calories: 150.0,
+  //     quantity: 25,
+  //     dateOfPurchase: DateTime(2022, 5, 2),
+  //     expirationDate: DateTime(2023, 12, 15),
+  //     trademark: 'Placeholder',
+  //   ),
+  //   Product(
+  //     id: 'p3',
+  //     title: 'Prod 3',
+  //     price: 2.49,
+  //     cost: 1.99,
+  //     calories: 150.0,
+  //     quantity: 25,
+  //     dateOfPurchase: DateTime(2022, 5, 2),
+  //     expirationDate: DateTime(2023, 12, 15),
+  //     trademark: 'Placeholder',
+  //   ),
+  //   Product(
+  //     id: 'p4',
+  //     title: 'Prod 4',
+  //     price: 2.49,
+  //     cost: 1.99,
+  //     calories: 150.0,
+  //     quantity: 25,
+  //     dateOfPurchase: DateTime(2022, 5, 2),
+  //     expirationDate: DateTime(2023, 12, 15),
+  //     trademark: 'Placeholder',
+  //   ),
+  //   Product(
+  //     id: 'p5',
+  //     title: 'Prod 5',
+  //     price: 2.49,
+  //     cost: 1.99,
+  //     calories: 150.0,
+  //     quantity: 25,
+  //     dateOfPurchase: DateTime(2022, 5, 2),
+  //     expirationDate: DateTime(2023, 12, 15),
+  //     trademark: 'Placeholder',
+  //   ),
+  // ];
 
-  ProductsOverviewScreen({Key? key}) : super(key: key);
+  const ProductsOverviewScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +95,9 @@ class ProductsOverviewScreen extends StatelessWidget {
             itemBuilder: (ctx, index) => ProductItem(
               documents[index].id,
               documents[index]['title'],
-              double.parse(documents[index]['price']),
+              documents[index]['price'],
+              documents[index]['quantity'],
+              documents[index]['expirationDate'],
             ),
             itemCount: documents.length,
           );
