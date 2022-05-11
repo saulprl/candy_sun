@@ -145,220 +145,229 @@ class _ProductFormState extends State<ProductForm> {
     Navigator.of(context).pop(true);
   }
 
+  Widget _columnForm() {
+    return Column(
+      children: [
+        TextFormField(
+          key: const ValueKey('title'),
+          controller: _titleController,
+          autocorrect: true,
+          enableSuggestions: true,
+          textCapitalization: TextCapitalization.words,
+          textInputAction: TextInputAction.next,
+          keyboardType: TextInputType.text,
+          decoration: const InputDecoration(
+            labelText: 'Title',
+            labelStyle: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          validator: (value) {
+            if (value!.isEmpty) {
+              return 'Title can\'t be empty!';
+            }
+            return null;
+          },
+          onSaved: (value) {},
+        ),
+        TextFormField(
+          key: const ValueKey('trademark'),
+          controller: _trademarkController,
+          autocorrect: true,
+          enableSuggestions: true,
+          textCapitalization: TextCapitalization.words,
+          textInputAction: TextInputAction.next,
+          keyboardType: TextInputType.text,
+          decoration: const InputDecoration(
+            labelText: 'Trademark',
+            labelStyle: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          validator: (value) {
+            if (value!.isEmpty) {
+              return 'Trademark can\'t be empty!';
+            }
+            return null;
+          },
+          onSaved: (value) {},
+        ),
+        TextFormField(
+          key: const ValueKey('price'),
+          controller: _priceController,
+          textInputAction: TextInputAction.next,
+          keyboardType: TextInputType.number,
+          decoration: const InputDecoration(
+            labelText: 'Price',
+            labelStyle: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          validator: (value) {
+            if (value!.isEmpty) {
+              return 'The price can\'t be empty!';
+            }
+            if (double.tryParse(value)! < 0.0) {
+              return 'The price can\'t be negative!';
+            }
+            return null;
+          },
+        ),
+        TextFormField(
+          key: const ValueKey('cost'),
+          controller: _costController,
+          textInputAction: TextInputAction.next,
+          keyboardType: TextInputType.number,
+          decoration: const InputDecoration(
+            labelText: 'Cost',
+            labelStyle: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          validator: (value) {
+            if (value!.isEmpty) {
+              return 'The cost can\'t be empty!';
+            }
+            if (double.tryParse(value)! < 0.0) {
+              return 'The cost can\'t be negative!';
+            }
+            return null;
+          },
+        ),
+        TextFormField(
+          key: const ValueKey('quantity'),
+          controller: _quantityController,
+          textInputAction: TextInputAction.done,
+          keyboardType: TextInputType.number,
+          decoration: const InputDecoration(
+            labelText: 'Quantity',
+            labelStyle: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          validator: (value) {
+            if (value!.isEmpty) {
+              return 'The quantity can\'t be empty!';
+            }
+            if (int.tryParse(value)! < 0) {
+              return 'The quantity can\'t be negative!';
+            }
+            return null;
+          },
+        ),
+        TextFormField(
+          key: const ValueKey('purchaseDate'),
+          controller: _purchaseDateController,
+          decoration: const InputDecoration(
+            labelText: 'Purchase Date',
+            labelStyle: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          validator: (value) {
+            if (value!.isEmpty) {
+              return 'Date of purchase can\'t be empty!';
+            }
+            if (DateFormat('yyyy-MM-dd').parse(value).isAfter(DateTime.now())) {
+              return 'Date of purchase hasn\'t happened yet!';
+            }
+            return null;
+          },
+          onTap: () {
+            FocusScope.of(context).requestFocus(FocusNode());
+            _showDatePicker(_purchaseDateController);
+          },
+        ),
+        TextFormField(
+          key: const ValueKey('expirationDate'),
+          controller: _expirationDateController,
+          decoration: const InputDecoration(
+            labelText: 'Expiration Date',
+            labelStyle: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          validator: (value) {
+            if (value!.isEmpty) {
+              return 'Expiration date can\'t be empty!';
+            }
+            if (DateFormat('yyyy-MM-dd')
+                .parse(value)
+                .isBefore(DateTime.now())) {
+              return 'Expiration date has already happened!';
+            }
+            return null;
+          },
+          onTap: () {
+            FocusScope.of(context).requestFocus(FocusNode());
+            _showDatePicker(_expirationDateController);
+          },
+        ),
+        TextFormField(
+          key: const ValueKey('calories'),
+          controller: _caloriesController,
+          textInputAction: TextInputAction.done,
+          keyboardType: TextInputType.number,
+          decoration: const InputDecoration(
+            labelText: 'Calories',
+            labelStyle: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          validator: (value) {
+            if (value!.isEmpty) {
+              return 'Calories can\'t be empty!';
+            }
+            if (double.tryParse(value)! < 0.0) {
+              return 'Calories can\'t be negative!';
+            }
+            return null;
+          },
+        ),
+        const SizedBox(height: 16.0),
+        ElevatedButton(
+          onPressed: _saveForm,
+          child: const Text('Save product'),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: FutureBuilder(
-            future: FirebaseFirestore.instance
-                .doc('products/${widget.productId}')
-                .get(),
-            builder: (ctx,
-                AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> product) {
-              if (product.connectionState == ConnectionState.waiting) {
-                return Center(
-                  child: CircularProgressIndicator(
-                      color: Theme.of(ctx).colorScheme.secondary),
-                );
-              }
-              final productData = product.data!;
-              _titleController.text = productData['title'];
-              _priceController.text = productData['price'];
-              _costController.text = productData['cost'];
-              _quantityController.text = productData['quantity'];
-              _caloriesController.text = productData['calories'];
-              _trademarkController.text = productData['trademark'];
-              _purchaseDateController.text = productData['dateOfPurchase'];
-              _expirationDateController.text = productData['expirationDate'];
-              _isAdd = false;
-              return Form(
+        child: widget.productId != null
+            ? FutureBuilder(
+                future: FirebaseFirestore.instance
+                    .doc('products/${widget.productId}')
+                    .get(),
+                builder: (ctx,
+                    AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>>
+                        product) {
+                  if (product.connectionState == ConnectionState.waiting) {
+                    return Center(
+                      child: CircularProgressIndicator(
+                          color: Theme.of(ctx).colorScheme.secondary),
+                    );
+                  }
+                  final productData = product.data!;
+                  _titleController.text = productData['title'];
+                  _priceController.text = productData['price'];
+                  _costController.text = productData['cost'];
+                  _quantityController.text = productData['quantity'];
+                  _caloriesController.text = productData['calories'];
+                  _trademarkController.text = productData['trademark'];
+                  _purchaseDateController.text = productData['dateOfPurchase'];
+                  _expirationDateController.text =
+                      productData['expirationDate'];
+                  _isAdd = false;
+                  return Form(
+                    key: _formKey,
+                    child: _columnForm(),
+                  );
+                })
+            : Form(
                 key: _formKey,
-                child: Column(
-                  children: [
-                    TextFormField(
-                      key: const ValueKey('title'),
-                      controller: _titleController,
-                      autocorrect: true,
-                      enableSuggestions: true,
-                      textCapitalization: TextCapitalization.words,
-                      textInputAction: TextInputAction.next,
-                      keyboardType: TextInputType.text,
-                      decoration: const InputDecoration(
-                        labelText: 'Title',
-                        labelStyle: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Title can\'t be empty!';
-                        }
-                        return null;
-                      },
-                      onSaved: (value) {},
-                    ),
-                    TextFormField(
-                      key: const ValueKey('trademark'),
-                      controller: _trademarkController,
-                      autocorrect: true,
-                      enableSuggestions: true,
-                      textCapitalization: TextCapitalization.words,
-                      textInputAction: TextInputAction.next,
-                      keyboardType: TextInputType.text,
-                      decoration: const InputDecoration(
-                        labelText: 'Trademark',
-                        labelStyle: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Trademark can\'t be empty!';
-                        }
-                        return null;
-                      },
-                      onSaved: (value) {},
-                    ),
-                    TextFormField(
-                      key: const ValueKey('price'),
-                      controller: _priceController,
-                      textInputAction: TextInputAction.next,
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                        labelText: 'Price',
-                        labelStyle: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'The price can\'t be empty!';
-                        }
-                        if (double.tryParse(value)! < 0.0) {
-                          return 'The price can\'t be negative!';
-                        }
-                        return null;
-                      },
-                    ),
-                    TextFormField(
-                      key: const ValueKey('cost'),
-                      controller: _costController,
-                      textInputAction: TextInputAction.next,
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                        labelText: 'Cost',
-                        labelStyle: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'The cost can\'t be empty!';
-                        }
-                        if (double.tryParse(value)! < 0.0) {
-                          return 'The cost can\'t be negative!';
-                        }
-                        return null;
-                      },
-                    ),
-                    TextFormField(
-                      key: const ValueKey('quantity'),
-                      controller: _quantityController,
-                      textInputAction: TextInputAction.done,
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                        labelText: 'Quantity',
-                        labelStyle: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'The quantity can\'t be empty!';
-                        }
-                        if (int.tryParse(value)! < 0) {
-                          return 'The quantity can\'t be negative!';
-                        }
-                        return null;
-                      },
-                    ),
-                    TextFormField(
-                      key: const ValueKey('purchaseDate'),
-                      controller: _purchaseDateController,
-                      decoration: const InputDecoration(
-                        labelText: 'Purchase Date',
-                        labelStyle: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Date of purchase can\'t be empty!';
-                        }
-                        if (DateFormat('yyyy-MM-dd')
-                            .parse(value)
-                            .isAfter(DateTime.now())) {
-                          return 'Date of purchase hasn\'t happened yet!';
-                        }
-                        return null;
-                      },
-                      onTap: () {
-                        FocusScope.of(context).requestFocus(FocusNode());
-                        _showDatePicker(_purchaseDateController);
-                      },
-                    ),
-                    TextFormField(
-                      key: const ValueKey('expirationDate'),
-                      controller: _expirationDateController,
-                      decoration: const InputDecoration(
-                        labelText: 'Expiration Date',
-                        labelStyle: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Expiration date can\'t be empty!';
-                        }
-                        if (DateFormat('yyyy-MM-dd')
-                            .parse(value)
-                            .isBefore(DateTime.now())) {
-                          return 'Expiration date has already happened!';
-                        }
-                        return null;
-                      },
-                      onTap: () {
-                        FocusScope.of(context).requestFocus(FocusNode());
-                        _showDatePicker(_expirationDateController);
-                      },
-                    ),
-                    TextFormField(
-                      key: const ValueKey('calories'),
-                      controller: _caloriesController,
-                      textInputAction: TextInputAction.done,
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                        labelText: 'Calories',
-                        labelStyle: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Calories can\'t be empty!';
-                        }
-                        if (double.tryParse(value)! < 0.0) {
-                          return 'Calories can\'t be negative!';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 16.0),
-                    ElevatedButton(
-                      onPressed: _saveForm,
-                      child: const Text('Save product'),
-                    ),
-                  ],
-                ),
-              );
-            }),
+                child: _columnForm(),
+              ),
       ),
     );
   }

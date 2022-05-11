@@ -79,9 +79,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         const Divider(height: 10.0),
         _textProperty('Price', _initValues['price']!),
         const Divider(height: 10.0),
-        _textProperty('Quantity', _initValues['quantity']!),
-        const Divider(height: 10.0),
         _textProperty('Cost', _initValues['cost']!),
+        const Divider(height: 10.0),
+        _textProperty('Quantity', _initValues['quantity']!),
         const Divider(height: 10.0),
         _textProperty(
           'Date of purchase',

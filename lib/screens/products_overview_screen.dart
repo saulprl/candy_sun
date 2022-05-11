@@ -70,7 +70,9 @@ class ProductsOverviewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: const Text('Products'),
         actions: [
@@ -98,6 +100,8 @@ class ProductsOverviewScreen extends StatelessWidget {
               documents[index]['price'],
               documents[index]['quantity'],
               documents[index]['expirationDate'],
+              scaffoldKey: _scaffoldKey,
+              key: ValueKey(documents[index].id),
             ),
             itemCount: documents.length,
           );
