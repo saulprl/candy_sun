@@ -133,7 +133,7 @@ class _ProductFormState extends State<ProductForm> {
         'dateOfPurchase': _purchaseDateController.text,
         'expirationDate': _expirationDateController.text,
         'trademark': _trademarkController.text,
-      }); //Need to swap initializers with StreamBuilders/FutureBuilders.
+      });
 
       ScaffoldMessenger.of(context).removeCurrentSnackBar();
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
