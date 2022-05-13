@@ -15,7 +15,10 @@ class SalesScreen extends StatelessWidget {
         title: const Text('Sales'),
       ),
       body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('sales').snapshots(),
+        stream: FirebaseFirestore.instance
+            .collection('sales')
+            .orderBy('saleDate', descending: true)
+            .snapshots(),
         builder: (ctx, AsyncSnapshot<QuerySnapshot> salesSnapshot) {
           if (salesSnapshot.connectionState == ConnectionState.waiting) {
             return Center(
@@ -48,7 +51,7 @@ class SalesScreen extends StatelessWidget {
                       quantity: documents[index]['quantity'],
                       total: (double.parse(documents[index]['pricePoint']) *
                               int.parse(documents[index]['quantity']))
-                          .toString(),
+                          .toStringAsFixed(2),
                       saleDate: documents[index]['saleDate'],
                       sellerEmail: seller.data!['email'],
                     );

@@ -153,6 +153,15 @@ class _SellProductScreenState extends State<SellProductScreen> {
                                 merge: true,
                               ),
                             );
+
+                            ScaffoldMessenger.of(ctx).removeCurrentSnackBar();
+                            ScaffoldMessenger.of(ctx).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                    'Sold $_quantity of ${product.data!['title']}'),
+                                duration: const Duration(seconds: 3),
+                              ),
+                            );
                             Navigator.of(ctx).pop();
                           }
                         },

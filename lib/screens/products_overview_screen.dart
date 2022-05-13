@@ -84,7 +84,10 @@ class ProductsOverviewScreen extends StatelessWidget {
       ),
       drawer: const MainDrawer(),
       body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('products').snapshots(),
+        stream: FirebaseFirestore.instance
+            .collection('products')
+            .orderBy('title')
+            .snapshots(),
         builder: (ctx, AsyncSnapshot<QuerySnapshot> productsSnapshot) {
           if (productsSnapshot.connectionState == ConnectionState.waiting) {
             return const Center(
