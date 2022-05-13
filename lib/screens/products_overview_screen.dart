@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../widgets/products/product_item.dart';
 import '../widgets/global/main_drawer.dart';
-import '../models/product.dart';
 import './edit_product_screen.dart';
 
 class ProductsOverviewScreen extends StatelessWidget {

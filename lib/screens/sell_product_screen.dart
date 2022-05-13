@@ -6,7 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../widgets/products/quantity_field.dart';
 
 class SellProductScreen extends StatefulWidget {
-  static const routeName = '/sales-screen';
+  static const routeName = '/sell-product-screen';
 
   const SellProductScreen({Key? key}) : super(key: key);
 
@@ -132,7 +132,7 @@ class _SellProductScreenState extends State<SellProductScreen> {
                                 .add({
                               'productId': product.data!.id,
                               'productTitle': product.data!['title'],
-                              'quantity': _quantity,
+                              'quantity': _quantity.toString(),
                               'pricePoint': product.data!['price'],
                               'sellerId':
                                   FirebaseAuth.instance.currentUser!.uid,
