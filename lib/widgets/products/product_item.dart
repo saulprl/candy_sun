@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../screens/product_detail_screen.dart';
-import '../../screens/sales_screen.dart';
+import '../../screens/sell_product_screen.dart';
 
 class ProductItem extends StatefulWidget {
   final String id;
@@ -98,7 +98,7 @@ class _ProductItemState extends State<ProductItem> {
           return Future.value(true);
         }
         Navigator.of(context).pushNamed(
-          SalesScreen.routeName,
+          SellProductScreen.routeName,
           arguments: widget.id,
         );
         return Future.value(false);
