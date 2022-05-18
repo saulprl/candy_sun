@@ -1,11 +1,8 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
 import './edit_product_screen.dart';
-import '../models/product.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   static const routeName = '/product-detail';
@@ -37,6 +34,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     if (!_isInit) {
       if (ModalRoute.of(context)!.settings.arguments != null) {
         _productId = ModalRoute.of(context)!.settings.arguments as String;
+        FirebaseFirestore.instance.doc('products/$_productId').get().then(
+          (prod) {
+            setState(() {
+              _initValues['title'] = prod.data()!['title'];
+            });
+          },
+        );
       }
       _isInit = true;
     }
@@ -117,9 +121,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           if (product.connectionState == ConnectionState.waiting) {
             return Center(
               child: CircularProgressIndicator(
-                  color: Theme.of(ctx).colorScheme.secondary),
+                color: Theme.of(ctx).colorScheme.secondary,
+              ),
             );
           }
+
           _initValues = product.data!.data()!;
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,
